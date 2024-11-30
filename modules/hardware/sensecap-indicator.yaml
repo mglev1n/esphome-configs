@@ -1,0 +1,147 @@
+# SenseCap Indicator D1 480px X 480px Smart Screen
+# Hardware configuration file
+
+esphome:
+  name: "${name}"
+  friendly_name: "${friendly_name}"
+  min_version: 2024.11.0
+  #name_add_mac_suffix: true
+  platformio_options:
+    board_build.flash_mode: dio
+
+esp32:
+  board: esp32-s3-devkitc-1
+  variant: esp32s3
+  flash_size: 16MB
+  framework:
+    type: esp-idf
+    sdkconfig_options:
+      COMPILER_OPTIMIZATION_SIZE: y
+      CONFIG_ESP32S3_DEFAULT_CPU_FREQ_240: "y"
+      CONFIG_ESP32S3_DATA_CACHE_64KB: "y"
+      CONFIG_ESP32S3_DATA_CACHE_LINE_64B: "y"
+      CONFIG_SPIRAM_FETCH_INSTRUCTIONS: y
+      CONFIG_SPIRAM_RODATA: y
+
+preferences:
+  flash_write_interval: 1min      
+
+psram:
+  mode: octal
+  speed: 80MHz
+  
+#-------------------------------------------
+# Internal outputs
+#-------------------------------------------
+output:
+    # Backlight LED
+  - platform: ledc
+    pin: GPIO38
+    id: GPIO38
+    frequency: 100Hz
+    
+    # Built in 240v relay
+  - id: internal_relay_1
+    platform: gpio
+    pin: 40
+
+    # Some versions of this switch have 3 relays
+  - id: internal_relay_2
+    platform: gpio
+    pin: 2
+  - id: internal_relay_3
+    platform: gpio
+    pin: 1
+
+light:
+  - platform: monochromatic
+    output: GPIO38
+    name: Display Backlight
+    id: display_backlight
+    restore_mode: ALWAYS_ON
+
+#-------------------------------------------
+# Touchscreen gt911 i2c
+#-------------------------------------------
+i2c:
+  - id: bus_a
+    sda: GPIO19
+    scl: GPIO45
+    
+touchscreen:
+  - platform: ft5x06
+    id: ft5x06_touchscreen
+    transform:
+      mirror_x: true
+      mirror_y: true
+
+  on_touch:
+    - logger.log:
+          format: Touch at (%d, %d)
+          args: [touch.x, touch.y]
+    - lambda: |-
+          ESP_LOGI("cal", "x=%d, y=%d, x_raw=%d, y_raw=%0d",
+              touch.x,
+              touch.y,
+              touch.x_raw,
+              touch.y_raw
+              );
+
+#-------------------------------------------
+# Display st7701s spi
+#-------------------------------------------
+spi:
+  - id: lcd_spi
+    clk_pin: GPIO48
+    mosi_pin: GPIO47
+    
+display:
+  - platform: st7701s
+    auto_clear_enabled: false
+    update_interval: never
+    spi_mode: MODE3
+    color_order: RGB
+    dimensions:
+      width: 480
+      height: 480
+    invert_colors: true
+    transform:
+      mirror_x: true
+      mirror_y: true
+    cs_pin:
+      pca9554: p_c_a
+      number: 4
+    reset_pin:
+      pca9554: p_c_a
+      number: 5
+    de_pin: 18
+    hsync_pin: 16
+    vsync_pin: 17
+    pclk_pin: 21
+    init_sequence:
+      - 1 # select canned init sequence number 1
+      - delay 5ms
+      - [ 0xE0, 0x1F ]  # Set sunlight readable enhancement
+    data_pins:
+      red:
+        - 4         #r1
+        - 3         #r2
+        - 2         #r3
+        - 1         #r4
+        - 0         #r5
+      green:
+        - 10        #g0
+        - 9         #g1
+        - 8         #g2
+        - 7         #g3
+        - 6         #g4
+        - 5         #g5
+      blue:
+        - 15        #b1
+        - 14        #b2
+        - 13        #b3
+        - 12        #b4
+        - 11        #b5
+    lambda: |-
+      it.fill(COLOR_BLACK);
+      it.print(0, 0, id(my_font), id(my_red), TextAlign::TOP_LEFT, "Hello World!");
