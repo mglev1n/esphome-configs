@@ -74,17 +74,6 @@ touchscreen:
     transform:
       mirror_x: true
       mirror_y: true
-    on_touch:
-      - logger.log:
-            format: Touch at (%d, %d)
-            args: [touch.x, touch.y]
-      - lambda: |-
-            ESP_LOGI("cal", "x=%d, y=%d, x_raw=%d, y_raw=%0d",
-                touch.x,
-                touch.y,
-                touch.x_raw,
-                touch.y_raw
-                );
 
 #-------------------------------------------
 # Display st7701s spi
