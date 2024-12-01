@@ -18,7 +18,7 @@
     button:
       text_font: $text_font
       scroll_on_focus: true
-      radius: 25px
+      radius: 10px
       width: $button_width
       height: $button_height_single
       pad_all: 10px
@@ -28,3 +28,23 @@
       checked:
         bg_color: $button_on_color
         text_color: gray
+
+    buttonmatrix:
+      bg_opa: TRANSP
+      border_opa: TRANSP
+      text_font: $text_font
+      scroll_on_focus: true
+      radius: 10px
+      width: 100%
+      height: 10%
+      pad_all: 10px
+      shadow_width: 0 # This is required even though the default is supposed to be 0
+      items:
+        bg_color: very_dark_gray
+        text_color: gray
+        checked:
+          bg_color: $button_on_color
+          text_color: gray
+        pressed:
+          bg_color: $button_on_color
+          text_color: gray

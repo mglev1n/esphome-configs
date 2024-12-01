@@ -11,3 +11,7 @@
             - light.turn_off: display_backlight
             - lvgl.pause:
                 show_snow: true
+          else:
+            - light.turn_on:
+                id: display_backlight
+                brightness: 25%
