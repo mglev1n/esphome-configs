@@ -9,7 +9,7 @@ obj:
     - label:
         id: digital_clock_time
         align: center
-        text_font: $weather_font
+        text_font: roboto96
         text_color: White
         text: "--:--"
     - label:
