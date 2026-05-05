@@ -1,0 +1,27 @@
+time:
+  - platform: homeassistant
+    id: homeassistant_time
+    on_time_sync:
+      - script.execute: time_update
+    on_time:
+      - seconds: 0
+        then:
+          - script.execute: time_update
+
+script:
+  - id: time_update
+    then:
+      - lvgl.label.update:
+          id: digital_clock_time
+          text: !lambda |-
+            auto now = id(homeassistant_time).now();
+            char buf[10];
+            snprintf(buf, sizeof(buf), "%02d:%02d", now.hour, now.minute);
+            return std::string(buf);
+      - lvgl.label.update:
+          id: digital_clock_date
+          text: !lambda |-
+            auto now = id(homeassistant_time).now();
+            char buf[20];
+            snprintf(buf, sizeof(buf), "%04d-%02d-%02d", now.year, now.month, now.day_of_month);
+            return std::string(buf);

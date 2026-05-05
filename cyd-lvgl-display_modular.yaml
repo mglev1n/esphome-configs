@@ -1,0 +1,275 @@
+substitutions:
+  name: "cyd-display"
+  friendly_name: "CYD Display"
+
+  lightbulb:         "\U000F0335"
+  ceiling_light:     "\U000F0769"
+  lamp:              "\U000F06B5"
+  floor_lamp:        "\U000F08DD"
+  string_lights:     "\U000F12BA"
+  track_light:       "\U000F0914"
+  bulkhead_light:    "\U000F1A2F"
+  led_strip:         "\U000F07D6"
+  coach_lamp:        "\U000F1020"
+  ceiling_fan_light: "\U000F1798"
+  night_icon:        "\U000F0594"
+
+  home_icon:  "\U000F02DC"
+  menu_left:  "\U000F035E"
+  menu_right: "\U000F035F"
+
+  navbar_font: light18
+  weather_font: roboto48
+  icon_font: light18
+  text_font: roboto18
+  screen_height: "240px"
+  screen_width: "320px"
+  sdl_height: "240"
+  sdl_width: "320"
+  button_on_color: "burnt_sienna"
+  button_off_color: "very_dark_gray"
+  icon_on_color: "yellow"
+  icon_off_color: "gray"
+  label_on_color: "white"
+  label_off_color: "gray"
+  button_text_color: "white"
+  button_height_single: '50px'
+  button_height_double: '104px'
+  button_width: '100px'
+  touchscreen_idle_timeout: "30s"
+  touchscreen_daytime_brightness: "100%"
+  touchscreen_nighttime_brightness: "50%"
+
+  # Screen goes to sleep at Midnight
+  screen_sleep_hour: '0'
+  screen_sleep_minute: '0'
+
+  # Screen wakes up at 5:30am
+  screen_wake_hour: '5'
+  screen_wake_minute: '30'
+
+  # CYD display/touch orientation (180° landscape, USB on left)
+  DISPLAY_MODEL: "ST7789V"
+  DISPLAY_INVERT_COLORS: "false"
+  DISPLAY_DATA_RATE: "40MHz"
+  DISPLAY_W: "320"
+  DISPLAY_H: "240"
+  DISPLAY_SWAP_XY: "true"
+  DISPLAY_MIRROR_X: "true"
+  DISPLAY_MIRROR_Y: "false"
+  TOUCH_SWAP_XY: "true"
+  TOUCH_MIRROR_X: "false"
+  TOUCH_MIRROR_Y: "false"
+  TOUCH_CAL_X_MIN: "280"
+  TOUCH_CAL_X_MAX: "3860"
+  TOUCH_CAL_Y_MIN: "340"
+  TOUCH_CAL_Y_MAX: "3860"
+
+  button_1_name: "Kitchen"
+  button_1_id: kitchen_light
+  button_1_icon: $lightbulb
+  button_1_device: "switch.kitchen_light"
+
+  button_2_name: "Dining"
+  button_2_id: dining_light
+  button_2_icon: $lightbulb
+  button_2_device: "switch.dining_room_chandelier"
+
+  button_3_name: "Hallway"
+  button_3_id: hallway_light
+  button_3_icon: $lightbulb
+  button_3_device: "switch.hallway_light"
+
+  button_4_name: "TV"
+  button_4_id: tv_light
+  button_4_icon: $lightbulb
+  button_4_device: "switch.tv_light"
+
+  button_5_name: "All"
+  button_5_id: all_lights
+  button_5_icon: $lightbulb
+  button_5_device: "switch.light_switches"
+
+  button_6_name: "Night Mode"
+  button_6_id: night_mode_switch
+  button_6_icon: $night_icon
+  button_6_device: "input_boolean.night_mode"
+
+
+globals:
+  - id: late_night_mode
+    type: bool
+    restore_value: false
+    initial_value: 'false'
+
+packages:
+  base: !include modules/common_base.yaml
+  colors: !include modules/common/color.yaml
+  fonts: !include modules/common/fonts.yaml
+  time: !include modules/lvgl/lvgl_time_homeassistant.yaml
+  clock: !include modules/lvgl/clock_scripts_digital.yaml
+  weather: !include modules/lvgl/weather_text_sensors.yaml
+
+  ###########
+  # CYD
+  ###########
+  webserver: !include modules/wifi_base.yaml
+  hardware: !include modules/hardware/cyd.yaml
+  sensors: !include modules/lvgl/lvgl_sensors_base.yaml
+
+api:
+  encryption:
+    key: !secret encryption_key
+
+esphome:
+  on_boot:
+    priority: -100
+    then:
+      - delay: 60s
+      - lvgl.page.show: main_page
+
+# -------------------------------------------------------------------------
+# Button state - Update state for Homeassistant objects and internal relays
+# -------------------------------------------------------------------------
+
+# Homeassistant switches go here
+text_sensor:
+  - !include { file: modules/lvgl/basic_switch_button_state.yaml, vars: { id: 1 } }
+  - !include { file: modules/lvgl/basic_switch_button_state.yaml, vars: { id: 2 } }
+  - !include { file: modules/lvgl/basic_switch_button_state.yaml, vars: { id: 3 } }
+  - !include { file: modules/lvgl/basic_switch_button_state.yaml, vars: { id: 4 } }
+  - !include { file: modules/lvgl/basic_switch_button_state.yaml, vars: { id: 5 } }
+  - !include { file: modules/lvgl/basic_boolean_button_state.yaml, vars: { id: 6 } }
+
+#-------------------------------------------
+# LVGL pages and Buttons
+#-------------------------------------------
+
+# Wake screen on touch
+touchscreen:
+  on_touch:
+    then:
+      - logger.log: "LVGL is active"
+      - lvgl.resume:
+      - if:
+      # Only turn on backlight and set to 50% if late_night_mode is on
+          condition:
+            - lambda: |-
+                return id(late_night_mode);
+          then:
+            - light.turn_on:
+                id: display_backlight
+                brightness: 50%
+          else:
+            - light.turn_on:
+                id: display_backlight
+                brightness: 100%
+
+# Main LVGL section
+lvgl:
+  buffer_size: 10%
+  displays:
+    - my_display
+  touchscreens:
+    - my_touchscreen
+  on_idle: !include { file: modules/lvgl/lvgl_touchscreen_idle.yaml }
+
+  theme: !include { file: modules/lvgl/lvgl_theme.yaml }
+  page_wrap: true
+
+  # Persistent navbar in top layer
+  top_layer:
+    widgets:
+      - obj:
+          align: bottom_mid
+          scrollable: false
+          bg_color: Black
+          border_opa: TRANSP
+          bg_opa: cover
+          width: 100%
+          height: 10%
+          widgets:
+            - !include modules/lvgl/navbar.yaml
+
+# Main Page
+  pages:
+    - id: boot_page
+      scrollable: false
+      bg_color: Black
+      border_opa: TRANSP
+      bg_opa: cover
+      widgets:
+        - !include modules/lvgl/boot_page.yaml
+
+    - id: main_page
+      scrollable: false
+      bg_color: Black
+      border_opa: TRANSP
+      bg_opa: cover
+      pad_all: 3
+      widgets:
+      # button container
+      - obj:
+          align: top_mid
+          scrollable: false
+          bg_color: Black
+          border_opa: TRANSP
+          bg_opa: cover
+          width: 100%
+          height: 90%
+          layout:
+            type: FLEX
+            flex_flow: COLUMN_WRAP
+            flex_align_cross: CENTER
+          widgets:
+            - button: !include { file: modules/lvgl/basic_switch_button.yaml, vars: { id: 1, height: $button_height_single } }
+            - button: !include { file: modules/lvgl/basic_switch_button.yaml, vars: { id: 2, height: $button_height_single } }
+            - button: !include { file: modules/lvgl/basic_switch_button.yaml, vars: { id: 3, height: $button_height_single } }
+            - button: !include { file: modules/lvgl/basic_switch_button.yaml, vars: { id: 4, height: $button_height_single } }
+            - button: !include { file: modules/lvgl/basic_switch_button.yaml, vars: { id: 5, height: $button_height_double } }
+            - button: !include { file: modules/lvgl/basic_boolean_button.yaml, vars: { id: 6, height: $button_height_double } }
+
+    # Clock
+    - id: clock_page
+      scrollable: false
+      bg_color: Black
+      border_opa: TRANSP
+      bg_opa: cover
+      pad_all: 3
+      widgets:
+        - obj:
+            align: top_mid
+            height: 90%
+            width: 100%
+            bg_color: Black
+            border_opa: TRANSP
+            bg_opa: cover
+            widgets:
+              - !include modules/lvgl/clock_widget_digital.yaml
+    # Weather
+    - id: weather_page
+      scrollable: false
+      bg_color: Black
+      border_opa: TRANSP
+      bg_opa: cover
+      pad_all: 3
+      widgets:
+        - obj:
+            align: top_mid
+            height: 90%
+            width: 100%
+            bg_color: Black
+            border_opa: TRANSP
+            bg_opa: cover
+            widgets:
+              - !include modules/lvgl/weather_widget.yaml
+
+#-------------------------------------------
+# Graphics and Fonts
+#-------------------------------------------
+image:
+  - file: https://media.esphome.io/logo/logo.png
+    id: boot_logo
+    resize: 300x58
+    type: RGB565
+    transparency: alpha_channel

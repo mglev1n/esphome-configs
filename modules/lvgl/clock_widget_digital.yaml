@@ -1,0 +1,21 @@
+obj:
+  height: 100%
+  width: 100%
+  align: center
+  bg_color: Black
+  border_width: 0
+  scrollable: false
+  widgets:
+    - label:
+        id: digital_clock_time
+        align: center
+        text_font: $weather_font
+        text_color: White
+        text: "--:--"
+    - label:
+        id: digital_clock_date
+        align: center
+        y: 50
+        text_font: $text_font
+        text_color: 0x888888
+        text: ""

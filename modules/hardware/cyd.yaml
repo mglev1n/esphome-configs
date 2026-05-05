@@ -1,0 +1,147 @@
+# Cheap Yellow Display (ESP32-2432S028 or compatible)
+# Hardware configuration file
+#
+# Required substitutions from parent config:
+#   name, friendly_name
+#
+# Optional substitutions (with defaults below):
+#   DISPLAY_MODEL, DISPLAY_INVERT_COLORS, DISPLAY_DATA_RATE
+#   DISPLAY_SWAP_XY, DISPLAY_MIRROR_X, DISPLAY_MIRROR_Y
+#   DISPLAY_W, DISPLAY_H
+#   TOUCH_SWAP_XY, TOUCH_MIRROR_X, TOUCH_MIRROR_Y
+#   TOUCH_CAL_X_MIN, TOUCH_CAL_X_MAX, TOUCH_CAL_Y_MIN, TOUCH_CAL_Y_MAX
+#
+# Provides:
+#   display: my_display
+#   touchscreen: my_touchscreen
+#   light: display_backlight
+#   light: led (RGB)
+
+substitutions:
+  DISPLAY_MODEL: "ST7789V"
+  DISPLAY_INVERT_COLORS: "false"
+  DISPLAY_DATA_RATE: "40MHz"
+  DISPLAY_W: "320"
+  DISPLAY_H: "240"
+  DISPLAY_SWAP_XY: "true"
+  DISPLAY_MIRROR_X: "true"
+  DISPLAY_MIRROR_Y: "false"
+  TOUCH_SWAP_XY: "true"
+  TOUCH_MIRROR_X: "true"
+  TOUCH_MIRROR_Y: "false"
+  TOUCH_CAL_X_MIN: "280"
+  TOUCH_CAL_X_MAX: "3860"
+  TOUCH_CAL_Y_MIN: "340"
+  TOUCH_CAL_Y_MAX: "3860"
+
+esphome:
+  name: "${name}"
+  friendly_name: "${friendly_name}"
+
+esp32:
+  board: esp32dev
+  framework:
+    type: arduino
+
+# Two SPI buses used by the CYD:
+# - lcd: built-in display
+# - touch_spi: built-in touch controller
+spi:
+  - id: lcd
+    clk_pin: GPIO14
+    mosi_pin: GPIO13
+
+  - id: touch_spi
+    clk_pin: GPIO25
+    mosi_pin: GPIO32
+    miso_pin: GPIO39
+
+#-------------------------------------------
+# Internal outputs
+#-------------------------------------------
+output:
+  - platform: ledc
+    pin: GPIO21
+    id: gpio_backlight_pwm
+
+  - platform: ledc
+    id: output_red
+    pin: GPIO4
+    inverted: true
+  - platform: ledc
+    id: output_green
+    pin: GPIO16
+    inverted: true
+  - platform: ledc
+    id: output_blue
+    pin: GPIO17
+    inverted: true
+
+light:
+  - platform: monochromatic
+    output: gpio_backlight_pwm
+    name: Display Backlight
+    id: display_backlight
+    restore_mode: ALWAYS_ON
+
+  - platform: rgb
+    name: LED
+    red: output_red
+    id: led
+    green: output_green
+    blue: output_blue
+    restore_mode: ALWAYS_OFF
+
+#-------------------------------------------
+# Touchscreen XPT2046 SPI
+#-------------------------------------------
+touchscreen:
+  platform: xpt2046
+  id: my_touchscreen
+  spi_id: touch_spi
+  cs_pin: 33
+  interrupt_pin: 36
+  update_interval: 20ms
+  threshold: 300
+  display: my_display
+
+  calibration:
+    x_min: ${TOUCH_CAL_X_MIN}
+    x_max: ${TOUCH_CAL_X_MAX}
+    y_min: ${TOUCH_CAL_Y_MIN}
+    y_max: ${TOUCH_CAL_Y_MAX}
+
+  transform:
+    swap_xy: ${TOUCH_SWAP_XY}
+    mirror_x: ${TOUCH_MIRROR_X}
+    mirror_y: ${TOUCH_MIRROR_Y}
+
+  on_touch:
+    - logger.log:
+          format: Touch at (%d, %d)
+          args: [touch.x, touch.y]
+
+#-------------------------------------------
+# Display ILI9xxx SPI
+#-------------------------------------------
+display:
+  - platform: ili9xxx
+    id: my_display
+    spi_id: lcd
+    model: ${DISPLAY_MODEL}
+    color_palette: 8BIT
+    data_rate: ${DISPLAY_DATA_RATE}
+    cs_pin: 15
+    dc_pin: 2
+    invert_colors: ${DISPLAY_INVERT_COLORS}
+    update_interval: never
+    auto_clear_enabled: false
+
+    transform:
+      swap_xy: ${DISPLAY_SWAP_XY}
+      mirror_x: ${DISPLAY_MIRROR_X}
+      mirror_y: ${DISPLAY_MIRROR_Y}
+
+    dimensions:
+      width: ${DISPLAY_W}
+      height: ${DISPLAY_H}
