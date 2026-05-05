@@ -182,7 +182,7 @@ lvgl:
           border_opa: TRANSP
           bg_opa: cover
           width: 100%
-          height: 10%
+          height: 15%
           widgets:
             - !include modules/lvgl/navbar.yaml
 
@@ -194,7 +194,7 @@ lvgl:
       border_opa: TRANSP
       bg_opa: cover
       widgets:
-        - !include modules/lvgl/boot_page.yaml
+        - !include modules/lvgl/boot_page_cyd.yaml
 
     - id: main_page
       scrollable: false

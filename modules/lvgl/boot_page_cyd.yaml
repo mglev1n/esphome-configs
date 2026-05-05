@@ -1,0 +1,38 @@
+obj:
+  id: boot_screen
+  layout:
+    type: flex
+    flex_flow: COLUMN_WRAP
+  height: ${screen_height}
+  width: ${screen_width}
+  text_font: roboto12
+  scrollable: false
+  bg_color: white
+  bg_opa: COVER
+  radius: 0
+  pad_all: 5
+  widgets:
+    - image:
+        src: boot_logo
+        pad_bottom: 5
+    - label:
+        id: esphome_version_label
+        text:
+          format: "ESPHome Version: %s"
+          args: [ 'id(esphome_version).state.c_str()' ]
+    - label:
+        text:
+          format: "Build Date: %s - %s"
+          args: [__DATE__, __TIME__]
+    - label:
+        id: connected_mac_label
+        text: "MAC: Not Connected"
+    - label:
+        id: ip_address_label
+        text: "IP: Not Connected"
+    - label:
+        id: connected_ssid_label
+        text: "SSID: Not Connected"
+    - label:
+        id: wifi_signal_db_percent_label
+        text: "WiFi: Not Connected"

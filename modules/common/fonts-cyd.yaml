@@ -9,6 +9,11 @@ font:
     size: 18
     bpp: 4
 
+  - file: "gfonts://Roboto"
+    id: roboto12
+    size: 12
+    bpp: 4
+
   - file: 'https://github.com/Templarian/MaterialDesign-Webfont/raw/v7.4.47/fonts/materialdesignicons-webfont.ttf'
     id: light18
     size: 18
