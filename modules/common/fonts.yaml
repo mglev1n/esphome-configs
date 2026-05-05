@@ -15,6 +15,16 @@ font:
     bpp: 8
 
   - file: "gfonts://Roboto"
+    id: roboto80
+    size: 80
+    bpp: 8
+
+  - file: "gfonts://Roboto"
+    id: roboto96
+    size: 96
+    bpp: 8
+
+  - file: "gfonts://Roboto"
     id: roboto18
     size: 18
     bpp: 8

@@ -19,7 +19,7 @@ substitutions:
   menu_right: "\U000F035F"
 
   navbar_font: light18
-  weather_font: roboto48
+  weather_font: roboto96
   icon_font: light18
   text_font: roboto18
   screen_height: "240px"
@@ -33,9 +33,9 @@ substitutions:
   label_on_color: "white"
   label_off_color: "gray"
   button_text_color: "white"
-  button_height_single: '50px'
-  button_height_double: '104px'
-  button_width: '100px'
+  button_height_single: '66px'
+  button_height_double: '66px'
+  button_width: '150px'
   touchscreen_idle_timeout: "30s"
   touchscreen_daytime_brightness: "100%"
   touchscreen_nighttime_brightness: "50%"
@@ -226,8 +226,8 @@ lvgl:
             - button: !include { file: modules/lvgl/basic_switch_button.yaml, vars: { id: 2, height: $button_height_single } }
             - button: !include { file: modules/lvgl/basic_switch_button.yaml, vars: { id: 3, height: $button_height_single } }
             - button: !include { file: modules/lvgl/basic_switch_button.yaml, vars: { id: 4, height: $button_height_single } }
-            - button: !include { file: modules/lvgl/basic_switch_button.yaml, vars: { id: 5, height: $button_height_double } }
-            - button: !include { file: modules/lvgl/basic_boolean_button.yaml, vars: { id: 6, height: $button_height_double } }
+            - button: !include { file: modules/lvgl/basic_switch_button.yaml, vars: { id: 5, height: $button_height_single } }
+            - button: !include { file: modules/lvgl/basic_boolean_button.yaml, vars: { id: 6, height: $button_height_single } }
 
     # Clock
     - id: clock_page
