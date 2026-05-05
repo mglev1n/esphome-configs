@@ -1,0 +1,27 @@
+time:
+  - platform: homeassistant
+    id: homeassistant_time
+    on_time_sync:
+      - script.execute: time_update
+    # Update the clock every second
+    on_time:
+      - seconds: "*"
+        then:
+          - script.execute: time_update
+
+script:
+  - id: time_update
+    then:
+      - lvgl.indicator.update:
+          id: second_hand
+          value: !lambda |-
+            return id(homeassistant_time).now().second;
+      - lvgl.indicator.update:
+          id: minute_hand
+          value: !lambda |-
+            return id(homeassistant_time).now().minute;
+      - lvgl.indicator.update:
+          id: hour_hand
+          value: !lambda |-
+            auto now = id(homeassistant_time).now();
+            return std::fmod(now.hour, 12) * 60 + now.minute;

@@ -12,3 +12,6 @@ The SDL display platform allows you to use create an ESPHome display on a deskto
 
 This is a really great little screen. I have a basic config and also a full featured one. guition-esp32-s3-4848s040-display_modular.yaml
  has a boot screen, a system for dimming the backligh at night and some basic buttons for controlling local and Home Assistant devices.
+
+
+docker run --network host --rm -v "${PWD}":/config -it ghcr.io/esphome/esphome run esphome-configs/sensecap-lvgl-display_modular.yaml

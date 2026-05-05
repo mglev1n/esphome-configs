@@ -1,0 +1,86 @@
+obj:
+  align: center
+  width: 100%
+  height: 100%
+  bg_color: "very_dark_gray"
+  pad_all: 10
+  layout:
+    pad_column: 0
+    type: GRID
+    grid_rows: [FR(60), FR(15), FR(15), FR(15)]    # Adjusted row proportions
+    grid_columns: [FR(15), FR(45), FR(45), FR(15)]         # Adjusted column proportions
+  widgets:
+    - label:
+        text: "\U000F14E4"
+        id: lbl_weather_forecast_condition_icon
+        text_font: weather150
+        text_color: "gray"
+        text_align: CENTER
+        grid_cell_row_pos: 0
+        grid_cell_column_pos: 0
+        grid_cell_column_span: 2
+        grid_cell_x_align: CENTER
+        grid_cell_y_align: CENTER
+
+    - label:
+        text: "Unknown"
+        id: lbl_weather_forecast_condition_name
+        text_font: $weather_font
+        text_color: "gray"
+        text_align: CENTER
+        grid_cell_row_pos: 0
+        grid_cell_column_pos: 2
+        grid_cell_column_span: 2
+        grid_cell_x_align: STRETCH
+        grid_cell_y_align: CENTER
+
+    - label:
+        text: "Temperature:"
+        text_font: $weather_font
+        text_color: "gray"
+        grid_cell_row_pos: 1
+        grid_cell_column_pos: 1
+
+    - label:
+        text: "-- °F"
+        id: lbl_weather_forecast_tempap
+        text_font: $weather_font
+        text_color: "gray"
+        text_align: RIGHT
+        grid_cell_row_pos: 1
+        grid_cell_column_pos: 2
+        grid_cell_x_align: STRETCH
+
+    - label:
+        text: "Feels like:"
+        text_font: $weather_font
+        text_color: "gray"
+        grid_cell_row_pos: 2
+        grid_cell_column_pos: 1
+
+    - label:
+        text: "-- °F"
+        id: lbl_weather_outdoor_now
+        text_font: $weather_font
+        text_color: "gray"
+        text_align: RIGHT
+        grid_cell_row_pos: 2
+        grid_cell_column_pos: 2
+        grid_cell_x_align: STRETCH
+
+    - label:
+        text: "Humidity:"
+        text_font: $weather_font
+        text_color: "gray"
+        grid_cell_row_pos: 3
+        grid_cell_column_pos: 1
+
+    - label:
+        text: "-- %"
+        id: lbl_weather_humidity
+        text_font: $weather_font
+        text_color: "gray"
+        text_align: RIGHT
+        grid_cell_row_pos: 3
+        grid_cell_column_pos: 2
+        grid_cell_x_align: STRETCH

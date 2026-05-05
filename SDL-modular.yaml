@@ -1,8 +1,8 @@
 substitutions:
-  # name: "sdl-lvgl"
-  # friendly_name: "SDL test system"
-  name: "sensecap-indicator"
-  friendly_name: "SenseCAP Indicator"
+  name: "sdl-lvgl"
+  friendly_name: "SDL test system"
+  # name: "sensecap-indicator"
+  # friendly_name: "SenseCAP Indicator"
 
   lightbulb:         "\U000F0335"
   ceiling_light:     "\U000F0769"
@@ -22,7 +22,7 @@ substitutions:
 
   navbar_font: light24
 
-  weather_font: roboto36
+  weather_font: roboto48
 
   icon_font: light40
   text_font: roboto18
@@ -52,40 +52,45 @@ substitutions:
   screen_wake_hour: '5'
   screen_wake_minute: '30'
 
-  button_1_name: "Kitchen"
-  button_1_id: kitchen_light
+  button_1_name: "Bedroom"
+  button_1_id: bedroom_light
   button_1_icon: $lightbulb
-  button_1_device: "switch.kitchen_light"
+  button_1_device: "switch.sonoff_100176490c"
 
-  button_2_name: "Dining"
-  button_2_id: dining_light
+  button_2_name: "Dresser"
+  button_2_id: dresser_light
   button_2_icon: $lightbulb
-  button_2_device: "switch.dining_room_chandelier"
+  button_2_device: "switch.sonoff_1001764e3e"
 
-  button_3_name: "Hallway"
-  button_3_id: hallway_light
+  button_3_name: "Living Room"
+  button_3_id: living_room_light
   button_3_icon: $lightbulb
-  button_3_device: "switch.hallway_light"
+  button_3_device: "switch.sonoff_100176394b"
 
-  button_4_name: "TV"
-  button_4_id: tv_light
-  button_4_icon: $lightbulb
-  button_4_device: "switch.tv_light"
+  button_4_name: "Night Mode"
+  button_4_id: night_mode_switch
+  button_4_icon: $night_icon
+  button_4_device: "input_boolean.night_mode"
 
-  button_5_name: "All"
-  button_5_id: all_lights
-  button_5_icon: $lightbulb
-  button_5_device: "switch.light_switches"
+  button_5_name: "Night Mode"
+  button_5_id: night_mode_switch
+  button_5_icon: $night_icon
+  button_5_device: "input_boolean.night_mode"
 
   button_6_name: "Night Mode"
   button_6_id: night_mode_switch
   button_6_icon: $night_icon
   button_6_device: "input_boolean.night_mode"
 
-  button_7_name: "Home"
-  button_7_id: home_mode_switch
-  button_7_icon: $home_icon
-  button_7_device: "binary_sensor.home_occupied_bermuda"
+  button_7_name: "Night Mode"
+  button_7_id: night_mode_switch
+  button_7_icon: $night_icon
+  button_7_device: "input_boolean.night_mode"
+
+  button_8_name: "Night Mode"
+  button_8_id: night_mode_switch
+  button_8_icon: $night_icon
+  button_8_device: "input_boolean.night_mode"
 
 globals:
   - id: late_night_mode
@@ -104,15 +109,15 @@ packages:
   ############
   # SDL
   ############
-  # hardware: !include modules/hardware/SDL-lvgl.yaml
-  # sensors: !include modules/lvgl/lvgl_sensors_base-SDL.yaml
+  hardware: !include modules/hardware/SDL-lvgl.yaml
+  sensors: !include modules/lvgl/lvgl_sensors_base-SDL.yaml
 
   ###########
   # Sensecap
   ###########
-  webserver: !include modules/wifi_base.yaml
-  hardware: !include modules/hardware/sensecap-indicator.yaml
-  sensors: !include modules/lvgl/lvgl_sensors_base.yaml
+  # webserver: !include modules/wifi_base.yaml
+  # hardware: !include modules/hardware/sensecap-indicator.yaml
+  # sensors: !include modules/lvgl/lvgl_sensors_base.yaml
 
 esphome:
   on_boot:
@@ -121,16 +126,6 @@ esphome:
       - delay: 60s
       - lvgl.page.show: main_page
 
-# ota:
-#   - platform: esphome
-
-# esp32_ble_tracker:
-#   scan_parameters:
-#     active: true
-
-# bluetooth_proxy:
-#   active: true
-      
 # -------------------------------------------------------------------------
 # Button state - Update state for Homeassistant objects and internal relays
 # -------------------------------------------------------------------------
@@ -140,10 +135,7 @@ text_sensor:
   - !include { file: modules/lvgl/basic_switch_button_state.yaml, vars: { id: 1 } }
   - !include { file: modules/lvgl/basic_switch_button_state.yaml, vars: { id: 2 } }
   - !include { file: modules/lvgl/basic_switch_button_state.yaml, vars: { id: 3 } }
-  - !include { file: modules/lvgl/basic_switch_button_state.yaml, vars: { id: 4 } }
-  - !include { file: modules/lvgl/basic_switch_button_state.yaml, vars: { id: 5 } }
-  - !include { file: modules/lvgl/basic_boolean_button_state.yaml, vars: { id: 6 } }
-  - !include { file: modules/lvgl/basic_boolean_button_state.yaml, vars: { id: 7 } }
+  - !include { file: modules/lvgl/basic_boolean_button_state.yaml, vars: { id: 4 } }
 
 #-------------------------------------------
 # LVGL pages and Buttons
@@ -231,11 +223,13 @@ lvgl:
             - button: !include { file: modules/lvgl/basic_switch_button.yaml, vars: { id: 1, height: $button_height_double } }
             - button: !include { file: modules/lvgl/basic_switch_button.yaml, vars: { id: 2, height: $button_height_double } }
             - button: !include { file: modules/lvgl/basic_switch_button.yaml, vars: { id: 3, height: $button_height_double } }
-            - button: !include { file: modules/lvgl/basic_switch_button.yaml, vars: { id: 4, height: $button_height_double } }
-            - button: !include { file: modules/lvgl/basic_switch_button.yaml, vars: { id: 5, height: $button_height_single } }
+            - button: !include { file: modules/lvgl/basic_boolean_button.yaml, vars: { id: 4, height: $button_height_double } }
+            
+            - button: !include { file: modules/lvgl/basic_boolean_button.yaml, vars: { id: 5, height: $button_height_single } }
             - button: !include { file: modules/lvgl/basic_boolean_button.yaml, vars: { id: 6, height: $button_height_single } }
-            - button: !include { file: modules/lvgl/basic_boolean_alert.yaml, vars: { id: 7, height: $button_height_single } }
-
+            - button: !include { file: modules/lvgl/basic_boolean_button.yaml, vars: { id: 7, height: $button_height_single } }
+            - button: !include { file: modules/lvgl/basic_boolean_button.yaml, vars: { id: 8, height: $button_height_single } }
+    
     # Clock
     - id: clock_page
       scrollable: false
@@ -253,6 +247,7 @@ lvgl:
             bg_opa: cover
             widgets:
               - !include modules/lvgl/clock_widget.yaml
+
     # Weather
     - id: weather_page
       scrollable: false
@@ -279,6 +274,6 @@ image:
     id: boot_logo
     resize: 460x90
     type: RGB565
-    transparency: alpha_channel
+    use_transparency: true
 
 

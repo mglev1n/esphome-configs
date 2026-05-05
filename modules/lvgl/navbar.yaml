@@ -1,0 +1,27 @@
+buttonmatrix:
+  height: 100%
+  align: bottom_mid
+  pad_top: 10px
+  pad_all: 0
+  text_font: $navbar_font
+  id: navbar
+  rows:
+    - buttons:
+      - id: top_prev
+        text: $menu_left
+        width: 1
+        on_click:
+          then:
+            lvgl.page.previous:
+      - id: top_home
+        text: $home_icon
+        width: 1
+        on_click:
+          then:
+            lvgl.page.show: main_page
+      - id: top_next
+        text: $menu_right
+        width: 1
+        on_click:
+          then:
+            lvgl.page.next:

@@ -1,0 +1,63 @@
+obj:
+  height: 425px
+  width: 425px
+  align: center
+  pad_all: 4
+  bg_color: Black
+  border_width: 0
+  widgets:
+    - meter:
+        height: 95%
+        width: 95%
+        align: center
+        bg_color: White
+        scales:
+          # Minor ticks
+          - ticks:
+              width: 2
+              count: 61
+              length: 10
+              color: Black
+            range_from: 0
+            range_to: 60
+            angle_range: 360
+            rotation: 270
+            # Minute hand
+            indicators:
+              - line:
+                  id: minute_hand
+                  width: 3
+                  color: Black
+                  r_mod: -1
+          # Major ticks
+          - angle_range: 330
+            rotation: 300
+            range_from: 1
+            range_to: 12
+            ticks:
+              width: 3
+              count: 12
+              length: 20
+              color: Black
+          # Hour hand
+          - angle_range: 360
+            rotation: 270
+            range_from: 0
+            range_to: 720
+            indicators:
+              - line:
+                  id: hour_hand
+                  width: 4
+                  color: Black
+                  r_mod: -40
+          # Second hand
+          - angle_range: 360
+            rotation: 270
+            range_from: 0
+            range_to: 60
+            indicators:
+              - line:
+                  id: second_hand
+                  width: 2
+                  color: Red
+                  r_mod: -10
