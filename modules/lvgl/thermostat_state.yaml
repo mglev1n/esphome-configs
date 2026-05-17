@@ -1,0 +1,70 @@
+---
+# Thermostat state subscriptions for a Home Assistant climate entity.
+# Required substitution from parent config:
+#   thermostat_entity: e.g. "climate.entryway"
+#
+# Updates labels and mode-button checked state on thermostat_widget.yaml.
+sensor:
+  - platform: homeassistant
+    id: thermostat_current_temp_sensor
+    entity_id: $thermostat_entity
+    attribute: current_temperature
+    on_value:
+      - lvgl.label.update:
+          id: thermostat_current_temp_label
+          text:
+            format: "%.0f°"
+            args: ['x']
+
+  - platform: homeassistant
+    id: thermostat_target_temp_sensor
+    entity_id: $thermostat_entity
+    attribute: temperature
+    on_value:
+      - lvgl.label.update:
+          id: thermostat_target_temp_label
+          text:
+            format: "%.0f°"
+            args: ['x']
+
+  - platform: homeassistant
+    id: thermostat_humidity_sensor
+    entity_id: $thermostat_entity
+    attribute: current_humidity
+    on_value:
+      - lvgl.label.update:
+          id: thermostat_humidity_label
+          text:
+            format: "%.0f%%"
+            args: ['x']
+
+text_sensor:
+  - platform: homeassistant
+    id: thermostat_state_sensor
+    entity_id: $thermostat_entity
+    on_value:
+      - lvgl.widget.update:
+          id: thermostat_mode_off
+          state:
+            checked: !lambda return x == "off";
+      - lvgl.widget.update:
+          id: thermostat_mode_heat
+          state:
+            checked: !lambda return x == "heat";
+      - lvgl.widget.update:
+          id: thermostat_mode_cool
+          state:
+            checked: !lambda return x == "cool";
+      - lvgl.widget.update:
+          id: thermostat_mode_auto
+          state:
+            checked: !lambda return x == "heat_cool";
+
+  - platform: homeassistant
+    id: thermostat_action_sensor
+    entity_id: $thermostat_entity
+    attribute: hvac_action
+    on_value:
+      - lvgl.label.update:
+          id: thermostat_action_label
+          text: !lambda return x;

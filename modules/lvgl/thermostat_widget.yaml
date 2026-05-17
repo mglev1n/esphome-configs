@@ -1,0 +1,157 @@
+obj:
+  height: 100%
+  width: 100%
+  align: center
+  bg_color: Black
+  border_width: 0
+  scrollable: false
+  pad_all: 0
+  widgets:
+    # Header: current temperature (left), humidity (right), action (under temp)
+    - label:
+        id: thermostat_current_temp_label
+        align: top_left
+        x: 8
+        y: 4
+        text_font: roboto24
+        text_color: White
+        text: "--°"
+    - label:
+        id: thermostat_humidity_label
+        align: top_right
+        x: -8
+        y: 8
+        text_font: $text_font
+        text_color: 0x888888
+        text: "--%"
+    - label:
+        id: thermostat_action_label
+        align: top_right
+        x: -8
+        y: 32
+        text_font: $text_font
+        text_color: $icon_on_color
+        text: "—"
+
+    # Target temperature with -/+ adjustments
+    - button:
+        id: thermostat_minus_btn
+        align: center
+        x: -90
+        y: -8
+        width: 50
+        height: 50
+        widgets:
+          - label:
+              align: center
+              text_font: roboto36
+              text: "-"
+        on_click:
+          - homeassistant.action:
+              action: climate.set_temperature
+              data:
+                entity_id: $thermostat_entity
+                temperature: !lambda |-
+                  float t = id(thermostat_target_temp_sensor).state - 1;
+                  return t < 50.0f ? 50.0f : t;
+    - label:
+        id: thermostat_target_temp_label
+        align: center
+        y: -8
+        text_font: roboto60
+        text_color: White
+        text: "--°"
+    - button:
+        id: thermostat_plus_btn
+        align: center
+        x: 90
+        y: -8
+        width: 50
+        height: 50
+        widgets:
+          - label:
+              align: center
+              text_font: roboto36
+              text: "+"
+        on_click:
+          - homeassistant.action:
+              action: climate.set_temperature
+              data:
+                entity_id: $thermostat_entity
+                temperature: !lambda |-
+                  float t = id(thermostat_target_temp_sensor).state + 1;
+                  return t > 90.0f ? 90.0f : t;
+
+    # HVAC mode buttons across the bottom
+    - button:
+        id: thermostat_mode_off
+        align: bottom_left
+        x: 4
+        y: -20
+        width: 73
+        height: 38
+        checkable: true
+        widgets:
+          - label:
+              align: center
+              text: "Off"
+        on_click:
+          - homeassistant.action:
+              action: climate.set_hvac_mode
+              data:
+                entity_id: $thermostat_entity
+                hvac_mode: "off"
+    - button:
+        id: thermostat_mode_heat
+        align: bottom_left
+        x: 81
+        y: -20
+        width: 73
+        height: 38
+        checkable: true
+        widgets:
+          - label:
+              align: center
+              text: "Heat"
+        on_click:
+          - homeassistant.action:
+              action: climate.set_hvac_mode
+              data:
+                entity_id: $thermostat_entity
+                hvac_mode: "heat"
+    - button:
+        id: thermostat_mode_cool
+        align: bottom_left
+        x: 158
+        y: -20
+        width: 73
+        height: 38
+        checkable: true
+        widgets:
+          - label:
+              align: center
+              text: "Cool"
+        on_click:
+          - homeassistant.action:
+              action: climate.set_hvac_mode
+              data:
+                entity_id: $thermostat_entity
+                hvac_mode: "cool"
+    - button:
+        id: thermostat_mode_auto
+        align: bottom_left
+        x: 235
+        y: -20
+        width: 80
+        height: 38
+        checkable: true
+        widgets:
+          - label:
+              align: center
+              text: "Auto"
+        on_click:
+          - homeassistant.action:
+              action: climate.set_hvac_mode
+              data:
+                entity_id: $thermostat_entity
+                hvac_mode: "heat_cool"

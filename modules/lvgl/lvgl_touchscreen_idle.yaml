@@ -14,4 +14,4 @@
           else:
             - light.turn_on:
                 id: display_backlight
-                brightness: 25%
+                brightness: 50%

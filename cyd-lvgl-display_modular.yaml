@@ -20,7 +20,7 @@ substitutions:
 
   navbar_font: light18
   icon_font: light18
-  text_font: roboto18
+  text_font: roboto12
   screen_height: "240px"
   screen_width: "320px"
   button_on_color: "burnt_sienna"
@@ -30,8 +30,8 @@ substitutions:
   label_on_color: "white"
   label_off_color: "gray"
   button_text_color: "white"
-  button_height_single: '62px'
-  button_height_double: '62px'
+  button_height_single: '50px'
+  button_height_double: '50px'
   button_width: '150px'
   touchscreen_idle_timeout: "30s"
   touchscreen_daytime_brightness: "100%"
@@ -82,15 +82,22 @@ substitutions:
   button_4_icon: $lightbulb
   button_4_device: "switch.tv_light"
 
-  button_5_name: "All"
-  button_5_id: all_lights
+  button_5_name: "Bedroom"
+  button_5_id: bedroom_light
   button_5_icon: $lightbulb
-  button_5_device: "switch.light_switches"
+  button_5_device: "switch.bedroom_light"
 
-  button_6_name: "Night Mode"
-  button_6_id: night_mode_switch
-  button_6_icon: $night_icon
-  button_6_device: "input_boolean.night_mode"
+  button_6_name: "All"
+  button_6_id: all_lights
+  button_6_icon: $lightbulb
+  button_6_device: "switch.light_switches"
+
+  button_7_name: "Night Mode"
+  button_7_id: night_mode_switch
+  button_7_icon: $night_icon
+  button_7_device: "input_boolean.night_mode"
+
+  thermostat_entity: "climate.entryway"
 
 
 globals:
@@ -104,13 +111,14 @@ packages:
   colors: !include modules/common/color.yaml
   fonts: !include modules/common/fonts-cyd.yaml
   time: !include modules/lvgl/lvgl_time_homeassistant.yaml
-  clock: !include modules/lvgl/clock_scripts_digital.yaml
+  # clock: !include modules/lvgl/clock_scripts_digital.yaml
   ###########
   # CYD
   ###########
   webserver: !include modules/wifi_base.yaml
   hardware: !include modules/hardware/cyd.yaml
   sensors: !include modules/lvgl/lvgl_sensors_base.yaml
+  thermostat: !include modules/lvgl/thermostat_state.yaml
 
 api:
   encryption:
@@ -123,6 +131,11 @@ esphome:
       - delay: 60s
       - lvgl.page.show: main_page
 
+esp32_ble_tracker:
+
+bluetooth_proxy:
+  active: true
+
 # -------------------------------------------------------------------------
 # Button state - Update state for Homeassistant objects and internal relays
 # -------------------------------------------------------------------------
@@ -134,7 +147,8 @@ text_sensor:
   - !include { file: modules/lvgl/basic_switch_button_state.yaml, vars: { id: 3 } }
   - !include { file: modules/lvgl/basic_switch_button_state.yaml, vars: { id: 4 } }
   - !include { file: modules/lvgl/basic_switch_button_state.yaml, vars: { id: 5 } }
-  - !include { file: modules/lvgl/basic_boolean_button_state.yaml, vars: { id: 6 } }
+  - !include { file: modules/lvgl/basic_switch_button_state.yaml, vars: { id: 6 } }
+  - !include { file: modules/lvgl/basic_boolean_button_state.yaml, vars: { id: 7 } }
 
 #-------------------------------------------
 # LVGL pages and Buttons
@@ -225,10 +239,11 @@ lvgl:
             - button: !include { file: modules/lvgl/basic_switch_button.yaml, vars: { id: 3, height: $button_height_single } }
             - button: !include { file: modules/lvgl/basic_switch_button.yaml, vars: { id: 4, height: $button_height_single } }
             - button: !include { file: modules/lvgl/basic_switch_button.yaml, vars: { id: 5, height: $button_height_single } }
-            - button: !include { file: modules/lvgl/basic_boolean_button.yaml, vars: { id: 6, height: $button_height_single } }
+            - button: !include { file: modules/lvgl/basic_switch_button.yaml, vars: { id: 6, height: $button_height_single } }
+            - button: !include { file: modules/lvgl/basic_boolean_button.yaml, vars: { id: 7, height: $button_height_single } }
 
-    # Clock
-    - id: clock_page
+    # Thermostat
+    - id: thermostat_page
       scrollable: false
       bg_color: Black
       border_opa: TRANSP
@@ -243,7 +258,25 @@ lvgl:
             border_opa: TRANSP
             bg_opa: cover
             widgets:
-              - !include modules/lvgl/clock_widget_digital.yaml
+              - !include modules/lvgl/thermostat_widget.yaml
+
+    # Clock (disabled to save flash)
+    # - id: clock_page
+    #   scrollable: false
+    #   bg_color: Black
+    #   border_opa: TRANSP
+    #   bg_opa: cover
+    #   pad_all: 3
+    #   widgets:
+    #     - obj:
+    #         align: top_mid
+    #         height: 90%
+    #         width: 100%
+    #         bg_color: Black
+    #         border_opa: TRANSP
+    #         bg_opa: cover
+    #         widgets:
+    #           - !include modules/lvgl/clock_widget_digital.yaml
 
 #-------------------------------------------
 # Graphics and Fonts

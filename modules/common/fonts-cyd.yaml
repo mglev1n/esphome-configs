@@ -1,13 +1,29 @@
 font:
+  # roboto96 removed — only used by the (disabled) clock widget
+  # - file: "gfonts://Roboto"
+  #   id: roboto96
+  #   size: 96
+  #   bpp: 4
+
   - file: "gfonts://Roboto"
-    id: roboto96
-    size: 96
+    id: roboto60
+    size: 60
     bpp: 4
 
   - file: "gfonts://Roboto"
-    id: roboto18
-    size: 18
+    id: roboto36
+    size: 36
     bpp: 4
+
+  - file: "gfonts://Roboto"
+    id: roboto24
+    size: 24
+    bpp: 4
+
+  # - file: "gfonts://Roboto"
+  #   id: roboto18
+  #   size: 18
+  #   bpp: 4
 
   - file: "gfonts://Roboto"
     id: roboto12

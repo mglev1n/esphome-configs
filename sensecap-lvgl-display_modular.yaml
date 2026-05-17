@@ -72,20 +72,25 @@ substitutions:
   button_4_icon: $lightbulb
   button_4_device: "switch.tv_light"
 
-  button_5_name: "All"
-  button_5_id: all_lights
+  button_5_name: "Bedroom"
+  button_5_id: bedroom_light
   button_5_icon: $lightbulb
-  button_5_device: "switch.light_switches"
+  button_5_device: "switch.bedroom_light"
 
-  button_6_name: "Night Mode"
-  button_6_id: night_mode_switch
-  button_6_icon: $night_icon
-  button_6_device: "input_boolean.night_mode"
+  button_6_name: "All"
+  button_6_id: all_lights
+  button_6_icon: $lightbulb
+  button_6_device: "switch.light_switches"
 
-  button_7_name: "Home"
-  button_7_id: home_mode_switch
-  button_7_icon: $home_icon
-  button_7_device: "binary_sensor.home_occupied_bermuda"
+  button_7_name: "Night Mode"
+  button_7_id: night_mode_switch
+  button_7_icon: $night_icon
+  button_7_device: "input_boolean.night_mode"
+
+  button_8_name: "Home"
+  button_8_id: home_mode_switch
+  button_8_icon: $home_icon
+  button_8_device: "binary_sensor.home_occupied_bermuda"
 
 globals:
   - id: late_night_mode
@@ -98,8 +103,8 @@ packages:
   colors: !include modules/common/color.yaml
   fonts: !include modules/common/fonts.yaml  
   time: !include modules/lvgl/lvgl_time_homeassistant.yaml
-  clock: !include modules/lvgl/clock_scripts.yaml
-  weather: !include modules/lvgl/weather_text_sensors.yaml
+  # clock: !include modules/lvgl/clock_scripts.yaml
+  # weather: !include modules/lvgl/weather_text_sensors.yaml
 
   ############
   # SDL
@@ -124,12 +129,10 @@ esphome:
 # ota:
 #   - platform: esphome
 
-# esp32_ble_tracker:
-#   scan_parameters:
-#     active: true
+esp32_ble_tracker:
 
-# bluetooth_proxy:
-#   active: true
+bluetooth_proxy:
+  active: true
       
 # -------------------------------------------------------------------------
 # Button state - Update state for Homeassistant objects and internal relays
@@ -142,8 +145,9 @@ text_sensor:
   - !include { file: modules/lvgl/basic_switch_button_state.yaml, vars: { id: 3 } }
   - !include { file: modules/lvgl/basic_switch_button_state.yaml, vars: { id: 4 } }
   - !include { file: modules/lvgl/basic_switch_button_state.yaml, vars: { id: 5 } }
-  - !include { file: modules/lvgl/basic_boolean_button_state.yaml, vars: { id: 6 } }
+  - !include { file: modules/lvgl/basic_switch_button_state.yaml, vars: { id: 6 } }
   - !include { file: modules/lvgl/basic_boolean_button_state.yaml, vars: { id: 7 } }
+  - !include { file: modules/lvgl/basic_boolean_button_state.yaml, vars: { id: 8 } }
 
 #-------------------------------------------
 # LVGL pages and Buttons
@@ -233,51 +237,52 @@ lvgl:
             - button: !include { file: modules/lvgl/basic_switch_button.yaml, vars: { id: 3, height: $button_height_double } }
             - button: !include { file: modules/lvgl/basic_switch_button.yaml, vars: { id: 4, height: $button_height_double } }
             - button: !include { file: modules/lvgl/basic_switch_button.yaml, vars: { id: 5, height: $button_height_single } }
-            - button: !include { file: modules/lvgl/basic_boolean_button.yaml, vars: { id: 6, height: $button_height_single } }
-            - button: !include { file: modules/lvgl/basic_boolean_alert.yaml, vars: { id: 7, height: $button_height_single } }
+            - button: !include { file: modules/lvgl/basic_switch_button.yaml, vars: { id: 6, height: $button_height_single } }
+            - button: !include { file: modules/lvgl/basic_boolean_button.yaml, vars: { id: 7, height: $button_height_single } }
+            - button: !include { file: modules/lvgl/basic_boolean_alert.yaml, vars: { id: 8, height: $button_height_single } }
 
-    # Clock
-    - id: clock_page
-      scrollable: false
-      bg_color: Black
-      border_opa: TRANSP
-      bg_opa: cover
-      pad_all: 5
-      widgets:
-        - obj: # Clock container
-            align: top_mid
-            height: 90%
-            width: 100%
-            bg_color: Black
-            border_opa: TRANSP
-            bg_opa: cover
-            widgets:
-              - !include modules/lvgl/clock_widget.yaml
-    # Weather
-    - id: weather_page
-      scrollable: false
-      bg_color: Black
-      border_opa: TRANSP
-      bg_opa: cover
-      pad_all: 5
-      widgets:
-        - obj: # Weather container
-            align: top_mid
-            height: 90%
-            width: 100%
-            bg_color: Black
-            border_opa: TRANSP
-            bg_opa: cover
-            widgets:
-              - !include modules/lvgl/weather_widget.yaml
+    # Clock (disabled to save flash)
+    # - id: clock_page
+    #   scrollable: false
+    #   bg_color: Black
+    #   border_opa: TRANSP
+    #   bg_opa: cover
+    #   pad_all: 5
+    #   widgets:
+    #     - obj: # Clock container
+    #         align: top_mid
+    #         height: 90%
+    #         width: 100%
+    #         bg_color: Black
+    #         border_opa: TRANSP
+    #         bg_opa: cover
+    #         widgets:
+    #           - !include modules/lvgl/clock_widget.yaml
+    # Weather (disabled to save flash)
+    # - id: weather_page
+    #   scrollable: false
+    #   bg_color: Black
+    #   border_opa: TRANSP
+    #   bg_opa: cover
+    #   pad_all: 5
+    #   widgets:
+    #     - obj: # Weather container
+    #         align: top_mid
+    #         height: 90%
+    #         width: 100%
+    #         bg_color: Black
+    #         border_opa: TRANSP
+    #         bg_opa: cover
+    #         widgets:
+    #           - !include modules/lvgl/weather_widget.yaml
 
 #-------------------------------------------
 # Graphics and Fonts
 #-------------------------------------------
 image:
-  - file: https://esphome.io/_static/logo-text-on-light.svg
+  - file: https://media.esphome.io/logo/logo.png
     id: boot_logo
-    resize: 460x90
+    resize: 460x88
     type: RGB565
     transparency: alpha_channel
 
