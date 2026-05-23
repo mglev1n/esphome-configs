@@ -99,8 +99,10 @@ substitutions:
 
   thermostat_entity: "climate.entryway"
 
-  # ESPectre tuning - "min" is most sensitive (default upstream is "auto")
-  segmentation_threshold: "min"
+  # ESPectre tuning - this ESP32-original device produces small CV-normalized
+  # movement scores (~0.0001 idle, ~0.001 moving). HA slider step is 0.1 which
+  # is 100x too coarse, so pin a fixed numeric threshold here instead of "auto"/"min".
+  segmentation_threshold: "0.0005"
 
 
 globals:

@@ -33,3 +33,8 @@ espectre:
   id: espectre_csi
   detection_algorithm: ${detection_algorithm}
   segmentation_threshold: ${segmentation_threshold}
+  lowpass_enabled: true
+  lowpass_cutoff: 11.0
+  hampel_enabled: true
+  hampel_threshold: 5.0
+  motion_off_hits: 15
