@@ -99,6 +99,9 @@ substitutions:
 
   thermostat_entity: "climate.entryway"
 
+  # ESPectre tuning - "min" is most sensitive (default upstream is "auto")
+  segmentation_threshold: "min"
+
 
 globals:
   - id: late_night_mode

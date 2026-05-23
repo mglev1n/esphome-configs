@@ -6,12 +6,14 @@
 # with bluetooth_proxy/esp32_ble_tracker.
 #
 # Optional substitutions (with defaults below):
-#   git_ref              - branch, tag, or commit (default: main)
-#   detection_algorithm  - mvs (default) or ml
+#   git_ref                 - branch, tag, or commit (default: main)
+#   detection_algorithm     - mvs (default) or ml
+#   segmentation_threshold  - auto (default), min, or fixed 0.0-10.0
 
 substitutions:
   git_ref: main
   detection_algorithm: mvs
+  segmentation_threshold: auto
 
 esphome:
   min_version: 2026.5.0
@@ -30,3 +32,4 @@ external_components:
 espectre:
   id: espectre_csi
   detection_algorithm: ${detection_algorithm}
+  segmentation_threshold: ${segmentation_threshold}
