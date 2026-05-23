@@ -1,0 +1,32 @@
+# ESPectre - WiFi CSI motion detection
+# https://github.com/francescopace/espectre
+#
+# Telemetry/sensors are exposed via the Home Assistant API.
+# The optional BLE companion-app server is intentionally omitted to coexist
+# with bluetooth_proxy/esp32_ble_tracker.
+#
+# Optional substitutions (with defaults below):
+#   git_ref              - branch, tag, or commit (default: main)
+#   detection_algorithm  - mvs (default) or ml
+
+substitutions:
+  git_ref: main
+  detection_algorithm: mvs
+
+esphome:
+  min_version: 2026.5.0
+
+esp32:
+  cpu_frequency: 240MHz
+
+external_components:
+  - source:
+      type: git
+      url: https://github.com/francescopace/espectre
+      ref: ${git_ref}
+    components: [espectre]
+    refresh: always
+
+espectre:
+  id: espectre_csi
+  detection_algorithm: ${detection_algorithm}

@@ -119,6 +119,7 @@ packages:
   hardware: !include modules/hardware/cyd.yaml
   sensors: !include modules/lvgl/lvgl_sensors_base.yaml
   thermostat: !include modules/lvgl/thermostat_state.yaml
+  espectre: !include modules/espectre.yaml
 
 api:
   encryption:
