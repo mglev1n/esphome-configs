@@ -1,8 +1,8 @@
 ---
 # Basic light switch button state - define its setting in substitutions
     platform: homeassistant
-    name: "$button_${id}_name"
-    entity_id: $button_${id}_device
+    name: "${button_${id}_name}"
+    entity_id: ${button_${id}_device}
     on_value:
       then:
         - lvgl.widget.update:

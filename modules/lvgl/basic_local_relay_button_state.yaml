@@ -1,7 +1,7 @@
 ---
     platform: binary
-    output: $button_${id}_device
-    name: $button_${id}_name
+    output: ${button_${id}_device}
+    name: ${button_${id}_name}
     id: local_light_${id}
     on_turn_on:
       then:
